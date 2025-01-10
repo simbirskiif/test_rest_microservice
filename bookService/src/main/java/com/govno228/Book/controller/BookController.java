@@ -53,6 +53,10 @@ public class BookController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book book) {
+        if (bookRepository.findById(id).orElse(null) == null) {
+            return ResponseEntity.notFound().build();
+        }
+        bookRepository.deleteById(id);
         return ResponseEntity.ok(bookRepository.save(book));
     }
 

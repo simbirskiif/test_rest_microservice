@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.govno228.authorService.models.Author;
@@ -47,6 +47,7 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
         Author authorFromDb = authorRepository.findById(id).orElse(null);
         if (authorFromDb == null) {
@@ -55,6 +56,8 @@ public class AuthorController {
         authorFromDb.setName(author.getName());
         authorFromDb.setSurname(author.getSurname());
         authorFromDb.setDescription(author.getDescription());
+        authorFromDb.setId(author.getId());
+        authorRepository.deleteById(id);
         return ResponseEntity.ok(authorRepository.save(authorFromDb));
     }
 
