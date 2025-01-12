@@ -1,6 +1,8 @@
 package com.govno228.authorService.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,6 +61,19 @@ public class AuthorController {
         authorFromDb.setId(author.getId());
         authorRepository.deleteById(id);
         return ResponseEntity.ok(authorRepository.save(authorFromDb));
+    }
+
+    @PostMapping("/ids")
+    public ResponseEntity<HashMap<Long, Author>> getAllAuthors(@RequestBody Set<Long> ids) {
+        //authorRepository.findAllById(ids);
+        HashMap<Long, Author> authors = new HashMap<>();
+        for (Long id : ids) {
+            Author author = authorRepository.findById(id).orElse(null);
+            if (author != null) {
+                authors.put(id, author);
+            }
+        }
+        return ResponseEntity.ok(authors);
     }
 
 }

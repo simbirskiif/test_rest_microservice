@@ -1,6 +1,9 @@
 package com.govno228.Book.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +31,11 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
-        return ResponseEntity.ok(bookRepository.findAll());
+        List<Book> books = bookRepository.findAll();
+        Set<Long> authorIds = books.stream().map(Book::getAuthorId).collect(Collectors.toSet());
+        HashMap<Long, Author> authors = authorClient.getAllAuthors(authorIds);
+        books.forEach(book -> book.setAuthor(authors.get(book.getAuthorId())));
+        return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
